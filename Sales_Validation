@@ -1,0 +1,57 @@
+
+USE FutonManufacturing;
+GO
+
+SELECT
+    ROUND(SUM(NetSales), 2) AS TotalRevenue,
+    COUNT(DISTINCT SalesOrderID) AS TotalOrders,
+    SUM(Quantity) AS UnitsSold
+FROM dbo.vw_Tableau_SalesPerformance
+WHERE OrderStatus IN ('Shipped', 'Delivered');
+
+
+SELECT
+    YEAR(OrderDate) AS SalesYear,
+    MONTH(OrderDate) AS SalesMonth,
+    COUNT(DISTINCT SalesOrderID) AS TotalOrders,
+    SUM(Quantity) AS UnitsSold,
+    ROUND(SUM(GrossSales), 2) AS GrossRevenue,
+    ROUND(SUM(DiscountAmount), 2) AS TotalDiscounts,
+    ROUND(SUM(NetSales), 2) AS NetRevenue
+FROM dbo.vw_Tableau_SalesPerformance
+WHERE OrderStatus IN ('Shipped', 'Delivered')
+GROUP BY
+    YEAR(OrderDate),
+    MONTH(OrderDate)
+ORDER BY
+    SalesYear,
+    SalesMonth;
+
+
+-- Order Status Validation
+
+
+SELECT
+    OrderStatus,
+    COUNT(DISTINCT SalesOrderID) AS TotalOrders,
+    ROUND(SUM(NetSales), 2) AS OrderValue
+FROM dbo.vw_Tableau_SalesPerformance
+GROUP BY OrderStatus
+ORDER BY TotalOrders DESC;
+
+
+
+-- Data Quality Checks
+
+
+SELECT
+    COUNT(*) AS TotalSalesLines,
+    SUM(CASE WHEN OrderDate IS NULL THEN 1 ELSE 0 END)
+        AS MissingOrderDates,
+    SUM(CASE WHEN ItemID IS NULL THEN 1 ELSE 0 END)
+        AS MissingItemIDs,
+    SUM(CASE WHEN NetSales IS NULL THEN 1 ELSE 0 END)
+        AS MissingNetSales,
+    SUM(CASE WHEN Quantity <= 0 THEN 1 ELSE 0 END)
+        AS InvalidQuantities
+FROM dbo.vw_Tableau_SalesPerformance;
