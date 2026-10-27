@@ -57,9 +57,8 @@ One of the things I focused on was making sure the numbers in Tableau matched th
 ## Dashboard
 
 **Tableau Public:** https://public.tableau.com/views/FutonDashboard/FutonManufacturing?:language=en-US&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link
-## Interactive Dashboard
 
-[View Dashboard on Tableau Public](YOUR_TABLEAU_URL)
+[View Dashboard on Tableau Public]([YOUR_TABLEAU_URL](https://public.tableau.com/views/FutonDashboard/FutonManufacturing?:language=en-US&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link))
 
 **Dashboard Screenshot:** https://github.com/Heyitsmatt12/Futon-Manufacturing-Analytics/blob/main/Sales%20Performance%20Dashboard.png
 ## Dashboard Preview
