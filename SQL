@@ -1,0 +1,33 @@
+USE FutonManufacturing;
+GO
+
+CREATE OR ALTER VIEW dbo.vw_Tableau_SalesPerformance AS
+
+SELECT
+    so.SalesOrderID,
+    so.OrderNumber,
+    so.OrderDate,
+    YEAR(so.OrderDate) AS SalesYear,
+    MONTH(so.OrderDate) AS SalesMonth,
+    so.Status AS OrderStatus,
+    so.CustomerID,
+    so.SalesChannelID,
+    so.StoreID,
+    so.SalesRepID,
+    sod.ItemID,
+    i.ItemCode,
+    i.ItemName,
+    sod.Quantity,
+    sod.UnitPrice,
+    sod.Quantity * sod.UnitPrice AS GrossSales,
+    COALESCE(sod.DiscountAmount, 0) AS DiscountAmount,
+    sod.NetAmount AS NetSales
+
+FROM dbo.SalesOrder AS so
+
+INNER JOIN dbo.SalesOrderDetail AS sod
+    ON so.SalesOrderID = sod.SalesOrderID
+
+INNER JOIN dbo.Items AS i
+    ON sod.ItemID = i.ItemID;
+GO
