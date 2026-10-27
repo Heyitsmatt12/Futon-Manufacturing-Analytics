@@ -1,0 +1,65 @@
+
+USE FutonManufacturing;
+GO
+
+-- Top-Selling Products by Revenue
+
+
+SELECT TOP 10
+    ItemID,
+    ItemName,
+    SUM(Quantity) AS UnitsSold,
+    COUNT(DISTINCT SalesOrderID) AS TotalOrders,
+    ROUND(SUM(NetSales), 2) AS TotalRevenue
+FROM dbo.vw_Tableau_SalesPerformance
+WHERE OrderStatus IN ('Shipped', 'Delivered')
+GROUP BY
+    ItemID,
+    ItemName
+ORDER BY TotalRevenue DESC;
+
+
+
+-- Product Revenue Contribution
+
+
+WITH ProductSales AS
+(
+    SELECT
+        ItemID,
+        ItemName,
+        SUM(Quantity) AS UnitsSold,
+        SUM(NetSales) AS TotalRevenue
+    FROM dbo.vw_Tableau_SalesPerformance
+    WHERE OrderStatus IN ('Shipped', 'Delivered')
+    GROUP BY
+        ItemID,
+        ItemName
+)
+
+SELECT
+    ItemName,
+    UnitsSold,
+    ROUND(TotalRevenue, 2) AS TotalRevenue,
+    ROUND(
+        100.0 * TotalRevenue /
+        NULLIF(SUM(TotalRevenue) OVER (), 0),
+        2
+    ) AS RevenuePercentage,
+    RANK() OVER (
+        ORDER BY TotalRevenue DESC
+    ) AS RevenueRank
+FROM ProductSales
+ORDER BY RevenueRank;
+
+-- Best-Selling Products by Quantity
+
+
+SELECT TOP 10
+    ItemName,
+    SUM(Quantity) AS UnitsSold,
+    ROUND(SUM(NetSales), 2) AS TotalRevenue
+FROM dbo.vw_Tableau_SalesPerformance
+WHERE OrderStatus IN ('Shipped', 'Delivered')
+GROUP BY ItemID, ItemName
+ORDER BY UnitsSold DESC;
